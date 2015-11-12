@@ -7,45 +7,38 @@
 # Oh well
 
 # Definition for a point.
-# class Point(object):
-#     def __init__(self, a=0, b=0):
-#         self.x = a
-#         self.y = b
+class Point(object):
+    def __init__(self, a=0, b=0):
+        self.x = a
+        self.y = b
 
 class Solution(object):
     def maxPoints(self, points):
+        if len(points) == 0:
+            return 0
+        elif len(points) == 1:
+            return 1
 
-        # Store maximum points on a line
         maxPointsOnLine = 0
 
-        # Loop over all possible lines
-        for a in range(0, len(points)-2):
-            for b in range(a+1, len(points)-1):
-
-                # Calculate the slope and intercept for the line between these two points
+        for a in range(0, len(points)):
+            D = {}
+            for b in range(0, len(points)):
                 pointA = points[a]
                 pointB = points[b]
-                if (pointB.x == pointA.x):
+                if pointB.x == pointA.x and pointA.y == pointB.y:
+                    slope = "Same Point"
+                elif (pointB.x == pointA.x):
                     slope = "Vertical"
                 else:
                     slope = (pointB.y - pointA.y) / (pointB.x - pointA.x)
-                    intercept = pointB.y - slope*pointB.x
 
-                # Find any other points that are on this line
-                curPointsOnLine = 0
-                for c in range(0, len(points)-1):
-                    pointC = points[c]
-                    
-                    if slope == "Vertical":
-                        curPointsOnLine += 1 if pointC.x == pointB.x else 0
-                    else:
-                        projectedY = slope*pointC.x + intercept
-                        if (projectedY == pointC.y):
-                            curPointsOnLine += 1
+                if (slope in D):
+                    D[slope] += 1;
+                else:
+                    D[slope] = 1;
 
-                if curPointsOnLine > maxPointsOnLine:
-                    maxPointsOnLine = curPointsOnLine
+                if D[slope] > maxPointsOnLine:
+                    maxPointsOnLine = D[slope]
 
         return maxPointsOnLine
-
-            
