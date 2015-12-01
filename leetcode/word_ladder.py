@@ -58,19 +58,20 @@ class Solution(object):
         queue = [beginWord]
         distance = 2
 
-        while len(queue):
+        while queue:
             # What do we want to do? We want to create the next 'branches' for each element in our queue. So for each word in our current queue, we want to add on all the words of 1-further depth
             currentQueue = queue[:]
             queue = []
             for queueWord in currentQueue:
                 for i in range(len(queueWord)):
                     for letter in ls:
-                        newWord = queueWord[:i] + letter + queueWord[i+1:]
-                        if newWord == endWord:
-                            return distance
-                        if newWord in wordList:
-                            queue.append(newWord)
-                            wordList.remove(newWord)
+                        if letter != queueWord[i]:
+                            newWord = queueWord[:i] + letter + queueWord[i+1:]
+                            if newWord == endWord:
+                                return distance
+                            if newWord in wordList:
+                                queue.append(newWord)
+                                wordList.remove(newWord)
             distance +=1
         return 0
 
