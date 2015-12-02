@@ -67,6 +67,19 @@
 # ISSUE: what if we have THREE or more trades?
 # E.g. 1-5, 2-4 (not collapse), BUT ALSOOOOOOO 3-7
 # Single best would be 1-7. This is brutal.
+# Does collapsing from edges work here? It might for this specific case, but that's not good enough
+
+# How can we GENERAL PURPOSE COLLAPSE
+# If we work from edges, compare 1st to last. If we cannot combine those two, that's good, but we can't necessarily move forward. Because we still might want to combine first with 2nd from last, and vice versa
+# OK, BUT: we CAN move on from the first (and vice versa for the other end) the moment we see something with a lower start.
+# So how about this:
+# Compare two elements (1&2). If can be combined, combine. If NOT, AND 2 has lowest low, then we can combine 2 & 3...because we know there is no circumstance where we will want to combine 1 & 3.
+# However, what happens if 1 has lowest low? E.g. 1-10, 2-8?
+# Fuuuuuuuck. There are conceivable circumstances where EITHER might be combined with #3
+# Example: 1-10, 2-8, 3-12 -> combine 1 & 3, throw away #2...or do we? DEPENDS. If we have a max of 1, then 1-12 is best
+# If we have a max of two though, combining 2-8 and 3-12 (total of 19) is best
+# hoooly crap.
+# this general approach of combining is fundamentally flawed, because which we combine it with is completely dependent on the number of trades we can do
 
 # THE BEST SOLUTION
 class Solution(object):
