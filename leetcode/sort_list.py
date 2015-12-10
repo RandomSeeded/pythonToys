@@ -1,0 +1,79 @@
+# https://leetcode.com/problems/sort-list/
+# Sort a linked list in O(n log n) time using constant space complexity.
+
+# note: whether it's a LL or an array is pretty irrelevant. We could simply make a temp array and sort that
+# Constant-space? We might be able to make this work with merge-sort, but could be a bit of a pain. What about quicksort?
+
+# QUICKSORT STEPS:
+# 1) pick a pivot (we'll just pick first element in the array)
+# 2) put everything lower than pivot before pivot
+# - how can we make this efficient? This is sort of the crux of the problem, doing this in-place.
+# 3) put everything higher than pivot after pivot
+
+# WE CAN TOTALLY JUST QS ON THE LL DIRECTLY
+# In fact, it may be easier
+# We pick pivot (head)
+# We iterate through the list
+# If something comes before the pivot, we INSERT it between the head and our node
+# Otherwise, we leave it in place and continue iteration
+# (No, it probably won't be easier)
+
+
+# Definition for singly-linked list.
+class ListNode(object):
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+
+    def __repr__(self):
+        temp = self
+        result = ""
+        while (temp != None):
+            result += str(temp.val)
+            temp = temp.next
+        return result
+
+class Solution(object):
+    def sortList(self, pivot, ending = None):
+        if pivot == None or pivot.next == None:
+            return pivot
+
+        # Use anySwaps to figure out when the list is entirely sorted. Has the advantage of potentially short-cutting early if we manage to sort ahead of time
+        anySwaps = False
+        head = pivot
+        current = pivot
+        prev = None
+
+        while (current != ending):
+            nextNode = current.next
+
+            # If the current element should fall before the pivot
+            if current.val < pivot.val:
+                # Insert it at the head
+                if prev:
+                    prev.next = nextNode
+                current.next = head
+                head = current
+                anySwaps = True
+
+            # If it shouldn't, iterate the 2nd-to-current (prev)
+            else:
+                prev = current
+
+            # Iterate to look at the next node
+            current = nextNode
+
+        if not anySwaps:
+            return head
+        else:
+            head = self.sortList(head, pivot)
+            self.sortList(pivot, ending)
+            return head
+
+head = ListNode(4)
+head.next = ListNode(2)
+head.next.next = ListNode(1)
+head.next.next.next = ListNode(3)
+sol = Solution()
+print(sol.sortList(head))
+
