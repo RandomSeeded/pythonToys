@@ -29,13 +29,14 @@ class ListNode(object):
         temp = self
         result = ""
         while (temp != None):
-            result += str(temp.val)
+            result += str(temp.val) + ","
             temp = temp.next
         return result
 
 class Solution(object):
     def sortList(self, pivot, ending = None):
-        if pivot == None or pivot.next == None:
+        print('input', pivot)
+        if pivot == None or pivot.next == None or pivot == ending:
             return pivot
 
         # Use anySwaps to figure out when the list is entirely sorted. Has the advantage of potentially short-cutting early if we manage to sort ahead of time
@@ -63,17 +64,17 @@ class Solution(object):
             # Iterate to look at the next node
             current = nextNode
 
-        if not anySwaps:
-            return head
-        else:
-            head = self.sortList(head, pivot)
-            self.sortList(pivot, ending)
-            return head
+        print('first half', self.sortList(head, pivot))
+        print('second half', self.sortList(pivot.next, ending))
+        print('head', head)
+
+        # The idea is that the sorts should have made it so everything following the head is correctly sorted. HOWEVER. Note that it's possible the head wasn't the 'true' head. Is that's what's going on?
+        return head
 
 head = ListNode(4)
-head.next = ListNode(2)
-head.next.next = ListNode(1)
-head.next.next.next = ListNode(3)
+head.next = ListNode(9)
+head.next.next = ListNode(8)
+head.next.next.next = ListNode(5)
 sol = Solution()
 print(sol.sortList(head))
 
