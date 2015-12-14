@@ -34,42 +34,63 @@ class ListNode(object):
         return result
 
 class Solution(object):
-    def sortList(self, pivot, ending = None):
-        print('input', pivot)
-        if pivot == None or pivot.next == None or pivot == ending:
-            return pivot
+    def sortList(self, start, end = None):
+        # If 1 or 0 elements in our list, return
+        if start == end:
+            return
 
-        # Use anySwaps to figure out when the list is entirely sorted. Has the advantage of potentially short-cutting early if we manage to sort ahead of time
-        anySwaps = False
-        head = pivot
-        current = pivot
-        prev = None
+        # Initializations
+        pivot = start
+        current = start
+        head = start
 
-        while (current != ending):
-            nextNode = current.next
-
-            # If the current element should fall before the pivot
+        while (current != end):
+            current = current.next
+            print('current.val', current.val)
+            print('pivot.val', pivot.val)
             if current.val < pivot.val:
-                # Insert it at the head
-                if prev:
-                    prev.next = nextNode
-                current.next = head
-                head = current
-                anySwaps = True
+                print('need swap')
 
-            # If it shouldn't, iterate the 2nd-to-current (prev)
-            else:
-                prev = current
 
-            # Iterate to look at the next node
-            current = nextNode
+        return start
 
-        print('first half', self.sortList(head, pivot))
-        print('second half', self.sortList(pivot.next, ending))
-        print('head', head)
-
-        # The idea is that the sorts should have made it so everything following the head is correctly sorted. HOWEVER. Note that it's possible the head wasn't the 'true' head. Is that's what's going on?
-        return head
+# class Solution(object):
+#     def sortList(self, pivot, ending = None):
+#         print('input', pivot)
+#         if pivot == None or pivot.next == None or pivot == ending:
+#             return pivot
+# 
+#         # Use anySwaps to figure out when the list is entirely sorted. Has the advantage of potentially short-cutting early if we manage to sort ahead of time
+#         anySwaps = False
+#         head = pivot
+#         current = pivot
+#         prev = None
+# 
+#         while (current != ending):
+#             nextNode = current.next
+# 
+#             # If the current element should fall before the pivot
+#             if current.val < pivot.val:
+#                 # Insert it at the head
+#                 if prev:
+#                     prev.next = nextNode
+#                 current.next = head
+#                 head = current
+#                 anySwaps = True
+# 
+#             # If it shouldn't, iterate the 2nd-to-current (prev)
+#             else:
+#                 prev = current
+# 
+#             # Iterate to look at the next node
+#             current = nextNode
+# 
+#         print('first half', self.sortList(head, pivot))
+#         print('second half', self.sortList(pivot.next, ending))
+#         print('head', head)
+# 
+#         # The idea is that the sorts should have made it so everything following the head is correctly sorted. HOWEVER. Note that it's possible the head wasn't the 'true' head. Is that's what's going on?
+#         return head
 
 head = ListNode(4)
 head.next = ListNode(9)
