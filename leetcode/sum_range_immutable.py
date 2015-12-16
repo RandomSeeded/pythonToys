@@ -15,8 +15,21 @@
 #     You may assume that the array does not change.
 #     There are many calls to sumRange function.
 
+# Intelligent solution: an accumulator array
+class NumArray:
+    def __init__(self, nums):
+        total = 0
+        self.accumulator = []
+        for i in range(len(nums)):
+            total += nums[i];
+            self.accumulator.append(total)
+
+    def sumRange(self, i, j):
+        return self.accumulator[j] - self.accumulator[i-1] if i > 0 else self.accumulator[j]
+
+
 # The recursive solution exceeded maximum depth. We can still store results for every possibility, but perform with a for loop. Let's do that
-class NumArray(object):
+class recursiveDynamic(object):
     def __init__(self, nums):
         self.nums = nums
         self.memo = {}
