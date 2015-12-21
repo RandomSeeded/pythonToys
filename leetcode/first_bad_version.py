@@ -15,11 +15,17 @@
 
 class Solution(object):
     def firstBadVersion(self, n):
-        def helper(leftpos, rightpos):
-            midpoint = math.floor((leftpos + rightpos) / 2)
-            if isBadVersion(midpoint)
+        def helper(left, right):
+            if left == right:
+                return left
+            else:
+                midpoint = math.floor((left+right)/2)
+                if isBadVersion(midpoint):
+                    return self.firstBadVersion(midpoint, right)
+                else:
+                    return self.firstBadVersion(left, midpoint)
 
-        return helper(0, n-1)
+        helper(1, n)
         """
         :type n: int
         :rtype: int
