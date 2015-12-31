@@ -35,6 +35,7 @@
 # Definition for a binary tree node.
 # Ew no we can't just pass a single ref to next, it does need to be a queue of some sort. E.g. the 'next' on 3 is 4, but the next on 4 is 5.
 
+from collections import deque
 class TreeNode(object):
     def __init__(self, x):
         self.val = x
@@ -43,4 +44,28 @@ class TreeNode(object):
 
 class Solution(object):
     def flatten(self, root):
-        print('hi')
+        nexts = deque()
+        def inner(node):
+            if not node:
+                return
+            if node.left:
+                node.next = node.left
+                if node.right:
+                    nexts.appendleft(node.right)
+                inner(node.left)
+            elif node.right:
+                node.next = node.right
+                inner(node.right)
+            else:
+                if len(nexts) > 0:
+                    node.next = nexts.popleft()
+
+        inner(root)
+
+
+
+
+root = TreeNode(5)
+sol = Solution()
+sol.flatten(root)
+
