@@ -14,3 +14,33 @@
 # aacecaaa: becomes aaacecaaacecaaa
 # We then start in the middle (aacecaaa) and work outwards towards the left and return the first palindrome we find.
 # that should work, though there may be more efficient ways of doing this
+
+import math
+class Solution:
+    def shortestPalindrome(self, s):
+        # Determines whether a string is a palindrome
+        def isPalindrome(s):
+            for i in range(math.ceil(len(s)/2)):
+                if s[i] != s[len(s)-i-1]:
+                    return False
+            return True
+
+        if s == "":
+            return ""
+        
+        # Create a worst-case palindrome string
+        totalStr = ""
+        for i in range(len(s) - 1):
+            totalStr += s[len(s) - 1 - i]
+        totalStr += s
+
+        # Check for the shortest palindrome. totalStr always has odd number of chars
+        midpoint = int(math.ceil(len(totalStr) / 2))
+        for i in range(midpoint):
+            substr = totalStr[midpoint-i-1:]
+            if isPalindrome(substr):
+                return substr
+
+sol = Solution()
+print(sol.shortestPalindrome("a"))
+
