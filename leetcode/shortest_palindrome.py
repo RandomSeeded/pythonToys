@@ -31,9 +31,12 @@
 
 class Solution:
     def shortestPalindrome(self, s):
+        if s == "":
+            return ""
+
         # Determine whether a string is a palindrome
         def isPalindrome(s):
-            for i in range(math.ceil(len(s)/2)):
+            for i in range(int(math.ceil(len(s)/2))):
                 if s[i] != s[len(s)-i-1]:
                     return False
             return True
@@ -51,7 +54,7 @@ class Solution:
         startPoint = getStartPoint(s)
         result = s;
         print('startPoint',startPoint)
-        for i in range(2*startPoint, len(s)):
+        for i in range(2*startPoint+1, len(s)):
             result = s[i] + result
             
         return result
