@@ -27,107 +27,46 @@
 # let's try out a 2-3 b tree
 # Good idea, but this is going to run into serious issues when there's repeats. What can we do about that? Ewwwwwwww. Let's for now imagine there were no dups? That's not the best way to do this. Crap.
 
-class Node:
-    def __init__(self):
-        self.left = None
-        self.middle = None
-        self.right = None
-        self.value1 = None
-        self.value2 = None
-        self.value3 = None
-        self.parent = None
 
-    def inNode(self, value):
-        if self.value1 == value or self.value2 == value or self.value3 == value:
-            return True
-        return False
+# BETTER SOLUTION: do it with priority queues (max-heap & min-heap?)
+# 
 
-    def isLeaf(self):
-        return self.left == None
-        
+import heapq
 class MedianFinder:
     def __init__(self):
-        self.root = Node()
+        self.smaller = []
+        self.larger = []
         """
         Initialize your data structure here.
         """
 
-    def search(self, value, currentNode):
-        # Default to the root for starting searches
-        if currentNode == None:
-            currentNode = self.root
-
-        # Leaf-node case
-        if currentNode.isLeaf():
-            # We will return the leaf where the node SHOULD go, even if it's not present in that node. This way we can use our search function for adding
-            return currentNode
-
-        # Recursive case on a 2-node
-        elif currentNode.value2 == None:
-            if currentNode.inNode(value):
-                return currentNode
-            elif value < currentNode.value1:
-                return self.search(value, currentNode.left)
-            else:
-                return self.search(value, currentNode.right)
+    def __repr__(self):
+        return "smaller: "+str(self.smaller) + " | larger: "+str(self.larger)
         
-        # Recursive case on a 3-node
-        else:
-            if currentNode.inNode(value):
-                return currentNode
-            elif value < currentNode.value1:
-                return self.search(value, currentNode.left)
-            elif value > currentNode.value1 and value < currentNode.value2:
-                return self.search(value, currentNode.middle)
-            else:
-                return self.search(value, currentNode.right)
 
     def addNum(self, num):
-        leaf = self.search(num, None)
-
-        # If there is only one element in the leaf, add here (2-node -> 3-node)
-        if leaf.value2 == None:
-            # Special case for root
-            if leaf.value1 == None:
-                leaf.value1 = num
-
-            elif num < leaf.value1:
-                leaf.value2 = leaf.value1
-                leaf.value1 = num
-
+        # If two queues are of same length, add to larger (may need to swap w/ one in smaller)
+        if len(self.smaller) == len(self.larger):
+            if len(self.larger) == 0:
+                heapq.heappush(self.larger, num)
             else:
-                leaf.value2 = num
+                largestSmall = -1 * heapq.heappop(self.smaller)
+                heapq.heappush(self.larger, max(largestSmall, num))
+                heapq.heappush(self.smaller, min(largestSmall, num) * -1)
+            return
 
-        # Otherwise, we now have a 4-node
+        # Otherwise, the larger always contains the extra. 
         else:
-            # Make this a 4-node
-            leaf.value3 = num
-            while leaf != None and leaf.value3 != None:
-                # Place the 3rd num in the correct place
-                if leaf.value3 < leaf.value1:
-                    temp = leaf.value3
-                    leaf.value3 = leaf.value2
-                    leaf.value2 = leaf.value1
-                    leaf.value1 = temp
-                elif leaf.value3 < leaf.value2:
-                    temp = leaf.value2
-                    leaf.value2 = leaf.value3
-                    leaf.value3 = temp
+            midpoint = heapq.heappop(self.larger)
 
-                # Move middle to the parent and split this node into two
-                if leaf.parent == None:
-                    leaf.parent = Node()
-                    leaf.parent.value1 = leaf.value3
-                elif leaf.parent.value2 == None:
-                    leaf.parent.value2 = leaf.value3 # (note: this needs to be expanded, could be on left)
-                else:
-                    leaf.parent.value3 = leaf.value3
+        # Push the prev midpoint and the new number onto the heaps
+        if num < midpoint:
+            heapq.heappush(self.smaller, -1 * num)
+            heapq.heappush(self.larger, midpoint)
+        else: 
+            heapq.heappush(self.larger, num)
+            heapq.heappush(self.smaller, -1 * midpoint)
 
-
-
-                # Point leaf to the parent, move up the chain
-                leaf = leaf.parent
-                
         """
         Adds a num into the data structure.
         :type num: int
@@ -136,6 +75,16 @@ class MedianFinder:
         
 
     def findMedian(self):
+        if len(self.larger) > len(self.smaller):
+            median = heapq.heappop(self.larger)
+            heapq.heappush(self.larger, median)
+        else:
+            mid1 = -1 * heapq.heappop(self.smaller)
+            mid2 = heapq.heappop(self.larger)
+            median = (float(mid1) + float(mid2)) / 2
+            heapq.heappush(self.smaller, -1 * mid1)
+            heapq.heappush(self.larger, mid2)
+        return median
         """
         Returns the median of current data stream
         :rtype: float
@@ -143,8 +92,15 @@ class MedianFinder:
 
 # Your MedianFinder object will be instantiated and called as such:
 mf = MedianFinder()
-mf.addNum(1)
-mf.findMedian()
+mf.addNum(-1)
+print(mf)
+print(mf.findMedian())
+mf.addNum(-2)
+print(mf)
+print(mf.findMedian())
+mf.addNum(-3)
+print(mf)
+print(mf.findMedian())
 
 # YE OLDE CODE
 
@@ -243,6 +199,120 @@ mf.findMedian()
 #                 else:
 #                     middleData = num
 # 
+#         """
+#         Adds a num into the data structure.
+#         :type num: int
+#         :rtype: void
+#         """
+#         
+# 
+#     def findMedian(self):
+#         """
+#         Returns the median of current data stream
+#         :rtype: float
+#         """
+
+# class Node:
+#     def __init__(self):
+#         self.left = None
+#         self.middle = None
+#         self.right = None
+#         self.value1 = None
+#         self.value2 = None
+#         self.value3 = None
+#         self.parent = None
+# 
+#     def inNode(self, value):
+#         if self.value1 == value or self.value2 == value or self.value3 == value:
+#             return True
+#         return False
+# 
+#     def isLeaf(self):
+#         return self.left == None
+#         
+# class MedianFinder:
+#     def __init__(self):
+#         self.root = Node()
+#         """
+#         Initialize your data structure here.
+#         """
+# 
+#     def search(self, value, currentNode):
+#         # Default to the root for starting searches
+#         if currentNode == None:
+#             currentNode = self.root
+# 
+#         # Leaf-node case
+#         if currentNode.isLeaf():
+#             # We will return the leaf where the node SHOULD go, even if it's not present in that node. This way we can use our search function for adding
+#             return currentNode
+# 
+#         # Recursive case on a 2-node
+#         elif currentNode.value2 == None:
+#             if currentNode.inNode(value):
+#                 return currentNode
+#             elif value < currentNode.value1:
+#                 return self.search(value, currentNode.left)
+#             else:
+#                 return self.search(value, currentNode.right)
+#         
+#         # Recursive case on a 3-node
+#         else:
+#             if currentNode.inNode(value):
+#                 return currentNode
+#             elif value < currentNode.value1:
+#                 return self.search(value, currentNode.left)
+#             elif value > currentNode.value1 and value < currentNode.value2:
+#                 return self.search(value, currentNode.middle)
+#             else:
+#                 return self.search(value, currentNode.right)
+# 
+#     def addNum(self, num):
+#         leaf = self.search(num, None)
+# 
+#         # If there is only one element in the leaf, add here (2-node -> 3-node)
+#         if leaf.value2 == None:
+#             # Special case for root
+#             if leaf.value1 == None:
+#                 leaf.value1 = num
+# 
+#             elif num < leaf.value1:
+#                 leaf.value2 = leaf.value1
+#                 leaf.value1 = num
+# 
+#             else:
+#                 leaf.value2 = num
+# 
+#         # Otherwise, we now have a 4-node
+#         else:
+#             # Make this a 4-node
+#             leaf.value3 = num
+#             while leaf != None and leaf.value3 != None:
+#                 # Place the 3rd num in the correct place
+#                 if leaf.value3 < leaf.value1:
+#                     temp = leaf.value3
+#                     leaf.value3 = leaf.value2
+#                     leaf.value2 = leaf.value1
+#                     leaf.value1 = temp
+#                 elif leaf.value3 < leaf.value2:
+#                     temp = leaf.value2
+#                     leaf.value2 = leaf.value3
+#                     leaf.value3 = temp
+# 
+#                 # Move middle to the parent and split this node into two
+#                 if leaf.parent == None:
+#                     leaf.parent = Node()
+#                     leaf.parent.value1 = leaf.value3
+#                 elif leaf.parent.value2 == None:
+#                     leaf.parent.value2 = leaf.value3 # (note: this needs to be expanded, could be on left)
+#                 else:
+#                     leaf.parent.value3 = leaf.value3
+# 
+# 
+# 
+#                 # Point leaf to the parent, move up the chain
+#                 leaf = leaf.parent
+#                 
 #         """
 #         Adds a num into the data structure.
 #         :type num: int
