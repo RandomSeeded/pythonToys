@@ -38,12 +38,12 @@ class Node:
         self.parent = None
 
     def inNode(self, value):
-        if self.value1 == value or self.data2 == value or self.data3 == value:
+        if self.value1 == value or self.value2 == value or self.value3 == value:
             return True
         return False
 
     def isLeaf(self):
-        return self.left != None
+        return self.left == None
         
 class MedianFinder:
     def __init__(self):
@@ -63,10 +63,10 @@ class MedianFinder:
             return currentNode
 
         # Recursive case on a 2-node
-        elif self.data2 == None:
+        elif currentNode.value2 == None:
             if currentNode.inNode(value):
                 return currentNode
-            elif value < currentNode.data1:
+            elif value < currentNode.value1:
                 return self.search(value, currentNode.left)
             else:
                 return self.search(value, currentNode.right)
@@ -75,9 +75,9 @@ class MedianFinder:
         else:
             if currentNode.inNode(value):
                 return currentNode
-            elif value < currentNode.data1:
+            elif value < currentNode.value1:
                 return self.search(value, currentNode.left)
-            elif value > currentNode.data1 and value < currentNode.data2:
+            elif value > currentNode.value1 and value < currentNode.value2:
                 return self.search(value, currentNode.middle)
             else:
                 return self.search(value, currentNode.right)
@@ -86,33 +86,48 @@ class MedianFinder:
         leaf = self.search(num, None)
 
         # If there is only one element in the leaf, add here (2-node -> 3-node)
-        if leaf.data2 == None:
+        if leaf.value2 == None:
             # Special case for root
-            if leaf.data1 == None:
-                leaf.data1 = num
+            if leaf.value1 == None:
+                leaf.value1 = num
 
-            elif num < leaf.data1:
-                leaf.data2 = leaf.data1
-                leaf.data1 = num
+            elif num < leaf.value1:
+                leaf.value2 = leaf.value1
+                leaf.value1 = num
 
             else:
-                leaf.data2 = num
+                leaf.value2 = num
 
         # Otherwise, we now have a 4-node
         else:
             # Make this a 4-node
-            leaf.data3 = num
-            while leaf.data3 != None:
+            leaf.value3 = num
+            while leaf != None and leaf.value3 != None:
                 # Place the 3rd num in the correct place
-                if leaf.data3 < leaf.data1:
-                    temp = leaf.data3
-                    leaf.data3 = leaf.data2
-                    leaf.data2 = leaf.data1
-                    leaf.data1 = temp
-                elif leaf.data3 < leaf.data2:
-                    temp = leaf.data2
-                    leaf.data2 = leaf.data3
-                    leaf.data3 = temp
+                if leaf.value3 < leaf.value1:
+                    temp = leaf.value3
+                    leaf.value3 = leaf.value2
+                    leaf.value2 = leaf.value1
+                    leaf.value1 = temp
+                elif leaf.value3 < leaf.value2:
+                    temp = leaf.value2
+                    leaf.value2 = leaf.value3
+                    leaf.value3 = temp
+
+                # Move middle to the parent and split this node into two
+                if leaf.parent == None:
+                    leaf.parent = Node()
+                    leaf.parent.value1 = leaf.value3
+                elif leaf.parent.value2 == None:
+                    leaf.parent.value2 = leaf.value3 # (note: this needs to be expanded, could be on left)
+                else:
+                    leaf.parent.value3 = leaf.value3
+
+
+
+                # Point leaf to the parent, move up the chain
+                leaf = leaf.parent
+                
         """
         Adds a num into the data structure.
         :type num: int
@@ -128,10 +143,8 @@ class MedianFinder:
 
 # Your MedianFinder object will be instantiated and called as such:
 mf = MedianFinder()
-print(mf)
 mf.addNum(1)
 mf.findMedian()
-print(mf)
 
 # YE OLDE CODE
 
