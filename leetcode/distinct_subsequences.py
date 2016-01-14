@@ -87,7 +87,7 @@ class Solution(object):
         
 sol = Solution()
 print(sol.numDistinct('rabbbiit', 'rabbit'))
-# THE ABOVE IS INCORRECTLY RETURNING 12, but should be 6. Why? Because we're counting the same paths twice.
+# THE ABOVE IS INCORRECTLY RETURNING 12, but should be 6. Why? Because we're counting the same paths twice. Urgh. We aren't re-running the CODE on all these duplicate paths, but we're re-adding.
 # print(sol.numDistinct("anacondastreetracecar", "contra"))
 
 
