@@ -36,12 +36,58 @@ class boolSolution(object):
         :type t: str
         :rtype: int
         """
+
+# So what's different about counting?
+# CASE #1: no repeated characters in T (e.g. ABCDE)
+# If S has repeated characters, we can math it, e.g. AABCDE (2)
+# What if there are repeated sequences? E.g. ABABCDE? 3 solutions (01, 03, 23)
+# Is that solvable linearly? Not that I can see. LETS GO TO BRUTE FORCE METHOD see what happens
+# Mild issue: how do you tell what index you're removing from the original string? Mild pain in the ass. Answer: we just pass in the original string and re-modify each time
+
 class Solution(object):
-    def numDistinct(self, s, t):
-        pass
+    def __init__(self):
+        self.seen = {}
+
+    def numDistinct(self, s, t, removed = {}):
+        # Re-generate the substring
+        substring = ""
+        for i in range(len(s)):
+            if i not in removed:
+                substring += s[i]
+        print('generating for substring', substring)
+
+        result = 0
+        if substring == t:
+            result = 1
+        elif len(substring) <= len(t):
+            result = 0
+        else:
+            # Return saved value from hash
+            if substring in self.seen:
+                print('Seen this substr before', substring, self.seen[substring])
+                return self.seen[substring]
+
+            for i in range(len(s)):
+                if i not in removed:
+                    # Idea here: we will remove all new indices one at a time, and recurse. We will add the newly removed index to removed and pass it along as a parameter. 
+                    # ONE ISSUE: we will probs need to remove the indices from removed when we pass back up. Not a big deal
+                    removed[i] = True
+                    newSubstring = ""
+                    for j in range(len(s)):
+                        if j not in removed:
+                            newSubstring += s[j]
+                    result += self.numDistinct(s, t, removed)
+                    del removed[i]
+
+        # Save value in hash and return result
+        self.seen[substring] = result
+        print('result for substring', substring, result)
+        return result
 
         
 sol = Solution()
-print(sol.numDistinct('rabbbit', 'rabbit'))
+print(sol.numDistinct('rabbbiit', 'rabbit'))
+# THE ABOVE IS INCORRECTLY RETURNING 12, but should be 6. Why? Because we're counting the same paths twice.
+# print(sol.numDistinct("anacondastreetracecar", "contra"))
 
 
