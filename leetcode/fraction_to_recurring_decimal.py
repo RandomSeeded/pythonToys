@@ -20,13 +20,20 @@
 
 # Remaining issues: proper decimal handling for non-zero cases
 
+# TODO: still have difficulties with negatives, presumably b/c remainder is incorrect
+
 import math
 class Solution(object):
     def fractionToDecimal(self, numerator, denominator):
         # Key-values: numerator, start position in solution
         seen = {}
 
-        def helperFractionToDecimal(numerator, result):
+        def sign(num):
+            if num >= 0:
+                return 1
+            return -1
+
+        def helperFractionToDecimal(numerator, denominator, result):
             # Keep track of adding decimal
             first = result == ""
 
@@ -54,10 +61,14 @@ class Solution(object):
             if remainder == 0:
                 return result
             else: 
-                result = helperFractionToDecimal(int(str(remainder) + "0"), result)
+                result = helperFractionToDecimal(int(str(remainder) + "0"), denominator, result)
                 return result
 
-        result = helperFractionToDecimal(numerator,"")
+        result = helperFractionToDecimal(abs(numerator),abs(denominator),"")
+
+        if sign(numerator) != sign(denominator) and numerator != 0 and denominator != 0:
+            result = "-" + result
+
         return result
         """
         :type numerator: int
