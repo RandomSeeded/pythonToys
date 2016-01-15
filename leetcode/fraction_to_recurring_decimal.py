@@ -30,7 +30,8 @@ class Solution(object):
             # Keep track of adding decimal
             first = result == ""
 
-            dividend = int(numerator / denominator)
+            dividend = int(float(numerator) / denominator)
+
             if numerator in seen:
                 # print('put opening parens at',seen[numerator])
                 result = result[:seen[numerator]] + "(" + result[seen[numerator]:]+")"
