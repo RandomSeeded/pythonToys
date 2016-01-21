@@ -36,17 +36,8 @@
 
 // FASTER: process of elimination
 var countPrimes = function(n) {
-  function isPrime(n) {
-    for (var i = 2; i <= Math.floor(n/2); i++) {
-      if (n % i === 0) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   function fillSieve(i) {
-    var total = i;
+    var total = i+i;
     while (total < n) {
       invalids[total] = true;
       total += i;
@@ -56,11 +47,13 @@ var countPrimes = function(n) {
   // Create obj of potentials
   var results = 0;
   var invalids = {};
+  for (var i = 2; i < Math.floor(n/2); i++) {
+    fillSieve(i);
+  }
   for (var i = 2; i < n; i++) {
-    if (!invalids[i] && isPrime(i)) {
+    if (!invalids[i]) {
       results++;
     }
-    fillSieve(i);
   }
   return results;
 }
@@ -68,6 +61,8 @@ var countPrimes = function(n) {
 console.log(countPrimes(7));
 console.log(countPrimes(8));
 console.log(countPrimes(16));
+console.log(countPrimes(499979));
+console.log(countPrimes(1500000));
 
 // var countPrimes = function(n) {
 //   var seen = {};
