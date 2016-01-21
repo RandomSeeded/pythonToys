@@ -15,54 +15,55 @@
 // ES5
 // This time actually solving the problem being asked. How many primes BELOW a certain #?
 // AKA 
-// var countPrimes = function(n) {
-//   function isPrime(n) {
-//     for (var i = 2; i <= Math.floor(n/2); i++) {
-//       if (n % i === 0) {
-//         return false;
-//       }
-//     }
-//     return true;
-//   }
-// 
-//   var results = 0;
-//   for (var i = 2; i < n; i++) {
-//     if (isPrime(i)) {
-//       results++;
-//     }
-//   }
-//   return results;
-// }
-
-// FASTER: process of elimination
 var countPrimes = function(n) {
-  function fillSieve(i) {
-    var total = i+i;
-    while (total < n) {
-      invalids[total] = true;
-      total += i;
+  function isPrime(n) {
+    for (var i = 2; i <= Math.sqrt(n); i++) {
+      if (n % i === 0) {
+        return false;
+      }
     }
+    return true;
   }
 
-  // Create obj of potentials
   var results = 0;
-  var invalids = {};
-  for (var i = 2; i < Math.floor(n/2); i++) {
-    fillSieve(i);
-  }
   for (var i = 2; i < n; i++) {
-    if (!invalids[i]) {
+    if (isPrime(i)) {
       results++;
     }
   }
   return results;
 }
 
-console.log(countPrimes(7));
-console.log(countPrimes(8));
-console.log(countPrimes(16));
-console.log(countPrimes(499979));
-console.log(countPrimes(1500000));
+// FASTER: process of elimination
+// var countPrimes = function(n) {
+//   function fillSieve(i) {
+//     var total = i+i;
+//     while (total < n) {
+//       invalids[total] = true;
+//       total += i;
+//     }
+//   }
+// 
+//   // Create obj of potentials
+//   var results = 0;
+//   var invalids = {};
+//   for (var i = 2; i < Math.floor(n/2); i++) {
+//     fillSieve(i);
+//   }
+//   for (var i = 2; i < n; i++) {
+//     if (!invalids[i]) {
+//       results++;
+//     }
+//   }
+//   return results;
+// }
+
+console.log(countPrimes(5));
+// console.log(countPrimes(7));
+// console.log(countPrimes(8));
+// console.log(countPrimes(16));
+// console.log(countPrimes(499979));
+// console.log(countPrimes(1500000));
 
 // var countPrimes = function(n) {
 //   var seen = {};
