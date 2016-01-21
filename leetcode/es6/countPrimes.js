@@ -15,6 +15,26 @@
 // ES5
 // This time actually solving the problem being asked. How many primes BELOW a certain #?
 // AKA 
+// var countPrimes = function(n) {
+//   function isPrime(n) {
+//     for (var i = 2; i <= Math.floor(n/2); i++) {
+//       if (n % i === 0) {
+//         return false;
+//       }
+//     }
+//     return true;
+//   }
+// 
+//   var results = 0;
+//   for (var i = 2; i < n; i++) {
+//     if (isPrime(i)) {
+//       results++;
+//     }
+//   }
+//   return results;
+// }
+
+// FASTER: process of elimination
 var countPrimes = function(n) {
   function isPrime(n) {
     for (var i = 2; i <= Math.floor(n/2); i++) {
@@ -25,11 +45,22 @@ var countPrimes = function(n) {
     return true;
   }
 
+  function fillSieve(i) {
+    var total = i;
+    while (total < n) {
+      invalids[total] = true;
+      total += i;
+    }
+  }
+
+  // Create obj of potentials
   var results = 0;
+  var invalids = {};
   for (var i = 2; i < n; i++) {
-    if (isPrime(i)) {
+    if (!invalids[i] && isPrime(i)) {
       results++;
     }
+    fillSieve(i);
   }
   return results;
 }
